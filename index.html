@@ -45,6 +45,9 @@
   .total { margin-top:10px; font-weight:700; color:var(--verde); }
   #toast { position:fixed; left:50%; bottom:92px; transform:translateX(-50%); background:#222; color:#fff; padding:10px 14px; border-radius:10px; font-size:14px; display:none; z-index:20; max-width:90%; text-align:center; }
   .empty { text-align:center; color:#667; padding:30px 10px; }
+  .wachoice { display:flex; gap:14px; flex-wrap:wrap; margin:4px 0; }
+  .wachoice label { display:flex; align-items:center; gap:6px; margin:0; font-weight:600; }
+  .wachoice input { width:auto; margin:0; }
   .paybox { margin-top:12px; padding:10px 12px; background:var(--suave); border-radius:12px; font-size:14px; }
   .paybox .aliasrow { display:flex; gap:8px; align-items:center; margin-top:6px; }
   .paybox code { flex:1; background:#fff; border:1px solid var(--borde); border-radius:8px; padding:9px 10px; font-size:15px; word-break:break-all; }
@@ -68,7 +71,7 @@
   <div id="review" class="muted"></div>
   <label for="name">Tu nombre *</label><input id="name" required placeholder="Nombre y apellido">
   <label for="delivery">Entrega</label>
-  <select id="delivery"><option value="envio">Envío sin cargo</option><option value="retiro">Retiro en el local</option></select>
+  <select id="delivery"><option value="envio">Envío sin cargo (9 de Julio)</option><option value="retiro">Retiro en el local</option></select>
   <div id="addrbox"><label for="addr">Dirección de entrega *</label><input id="addr" placeholder="Calle y número"></div>
   <label for="note">Aclaraciones (opcional)</label><textarea id="note" rows="2" placeholder="Horario, comentarios..."></textarea>
   <div class="total" id="ftotal"></div>
@@ -77,11 +80,16 @@
     <div class="aliasrow"><code id="aliasText"></code><button type="button" id="copyAlias">Copiar alias</button></div>
     <a id="payLink" href="#" target="_blank" rel="noopener" style="display:none">Pagar con tu billetera virtual</a>
   </div>
+  <div id="wabox" style="display:none">
+    <label>Enviar el pedido desde</label>
+    <div class="wachoice"><label><input type="radio" name="waapp" value="wa" checked> WhatsApp</label><label><input type="radio" name="waapp" value="biz"> WhatsApp Business</label></div>
+    <div class="muted">Si tenés los dos instalados, elegí desde cuál querés enviarlo.</div>
+  </div>
   <div class="row"><button type="button" id="cancel">Volver</button><button type="submit" id="go">Enviar por WhatsApp</button></div>
 </form></div>
 <div id="toast"></div>
 <script>
-const DATA = {"shop":"Natural Clau's","whatsapp":"5492317512425","alias":"naturalclaus.mp","payLink":"","updated":"13/11/2026 16:56","products":[{"id":4,"name":"Almendra guara mediana","kg":40700.00,"p500":20350.00,"p100":4400.00,"max":2000},{"id":5,"name":"Almendra Laminada","kg":35200.00,"p500":17600.00,"p100":3800.00,"max":2000},{"id":6,"name":"Almohadillas Chocolate","kg":10400.00,"p500":5200.00,"p100":1100.00,"max":2000},{"id":7,"name":"Almohadillas Frutilla","kg":10400.00,"p500":5200.00,"p100":1100.00,"max":2000},{"id":8,"name":"Almohadillas limon","kg":10400.00,"p500":5200.00,"p100":1100.00,"max":2000},{"id":9,"name":"Anana en cubos- colores","kg":13700.00,"p500":6850.00,"p100":1550.00,"max":2000},{"id":10,"name":"Arandanos rojos (Chile)","kg":33120.00,"p500":16560.00,"p100":3600.00,"max":3000},{"id":11,"name":"Aritos frutales","kg":7200.00,"p500":3600.00,"p100":1000.00,"max":3000},{"id":12,"name":"Bastoncitos de salvado","kg":6600.00,"p500":3300.00,"p100":800.00,"max":2000},{"id":13,"name":"Castañas caju crudas (Brasil)","kg":27200.00,"p500":13600.00,"p100":3000.00,"max":2000},{"id":14,"name":"Castañas caju tostadas","kg":30320.00,"p500":15160.00,"p100":3300.00,"max":1850},{"id":15,"name":"Castañas de Caju Tostadas y saladas","kg":30320.00,"p500":15160.00,"p100":3300.00,"max":2000},{"id":16,"name":"Chip Banana","kg":20200.00,"p500":10100.00,"p100":2300.00,"max":3000},{"id":2,"name":"Pasas de uva","kg":12800.00,"p500":6400.00,"p100":1408.00,"max":6950},{"id":33,"name":"Pasas uva sultaninas","kg":9600.00,"p500":4800.00,"p100":900.00,"max":2000},{"id":36,"name":"Semilla girasol","kg":6800.00,"p500":3400.00,"p100":800.00,"max":900}]};
+const DATA = {"shop":"Natural Clau's","whatsapp":"5492317512425","alias":"naturalclaus.mp","payLink":"","updated":"14/11/2026 09:54","products":[{"id":4,"name":"Almendra guara mediana","kg":40700.00,"p500":20350.00,"p100":4400.00,"max":2000},{"id":5,"name":"Almendra Laminada","kg":35200.00,"p500":17600.00,"p100":3800.00,"max":2000},{"id":6,"name":"Almohadillas Chocolate","kg":10400.00,"p500":5200.00,"p100":1100.00,"max":2000},{"id":7,"name":"Almohadillas Frutilla","kg":10400.00,"p500":5200.00,"p100":1100.00,"max":2000},{"id":8,"name":"Almohadillas limon","kg":10400.00,"p500":5200.00,"p100":1100.00,"max":2000},{"id":9,"name":"Anana en cubos- colores","kg":13700.00,"p500":6850.00,"p100":1550.00,"max":2000},{"id":10,"name":"Arandanos rojos (Chile)","kg":33120.00,"p500":16560.00,"p100":3600.00,"max":3000},{"id":11,"name":"Aritos frutales","kg":7200.00,"p500":3600.00,"p100":1000.00,"max":3000},{"id":12,"name":"Bastoncitos de salvado","kg":6600.00,"p500":3300.00,"p100":800.00,"max":2000},{"id":13,"name":"Castañas caju crudas (Brasil)","kg":27200.00,"p500":13600.00,"p100":3000.00,"max":2000},{"id":14,"name":"Castañas caju tostadas","kg":30320.00,"p500":15160.00,"p100":3300.00,"max":1850},{"id":15,"name":"Castañas de Caju Tostadas y saladas","kg":30320.00,"p500":15160.00,"p100":3300.00,"max":2000},{"id":16,"name":"Chip Banana","kg":20200.00,"p500":10100.00,"p100":2300.00,"max":3000},{"id":2,"name":"Pasas de uva","kg":12800.00,"p500":6400.00,"p100":1408.00,"max":6950},{"id":33,"name":"Pasas uva sultaninas","kg":9600.00,"p500":4800.00,"p100":900.00,"max":2000},{"id":36,"name":"Semilla girasol","kg":6800.00,"p500":3400.00,"p100":800.00,"max":900}]};
 (function () {
   'use strict';
   var products = DATA.products || [];
@@ -222,7 +230,7 @@ const DATA = {"shop":"Natural Clau's","whatsapp":"5492317512425","alias":"natura
   function message() {
     var name = $('name').value.trim(), envio = $('delivery').value === 'envio', addr = $('addr').value.trim(), note = $('note').value.trim();
     var t = '🛒 *Pedido - ' + (DATA.shop || "Natural Clau's") + '*\nCliente: ' + name + '\n';
-    t += envio ? ('Entrega: envío sin cargo a ' + addr + '\n') : 'Entrega: retiro en el local\n';
+    t += envio ? ('Entrega: envío sin cargo (9 de Julio) a ' + addr + '\n') : 'Entrega: retiro en el local\n';
     if (note) t += 'Aclaraciones: ' + note + '\n';
     t += '\n';
     Object.keys(cart).forEach(function (id) { t += '• ' + byId[id].name + ': ' + qty(cart[id]) + ' - ' + money(lineTotal(id)) + '\n'; });
@@ -231,13 +239,43 @@ const DATA = {"shop":"Natural Clau's","whatsapp":"5492317512425","alias":"natura
   }
   window.__message = message;
 
+  // Elección de la aplicación: en Android se puede enviar con WhatsApp o con WhatsApp Business. Si la elegida no está
+  // instalada, el navegador usa el enlace común de wa.me (que abre la que haya). En otros dispositivos se usa wa.me.
+  var WKEY = 'nc_wa_app';
+  var isAndroid = /Android/i.test(navigator.userAgent || '');
+  function selectedApp() {
+    var r = document.querySelector('input[name="waapp"]:checked');
+    return r ? r.value : 'wa';
+  }
+  function sendUrl(app) {
+    var text = encodeURIComponent(message());
+    var web = 'https://wa.me/' + DATA.whatsapp + '?text=' + text;
+    if (!isAndroid) return web;
+    var pkg = app === 'biz' ? 'com.whatsapp.w4b' : 'com.whatsapp';
+    return 'intent://send/?phone=' + DATA.whatsapp + '&text=' + text + '#Intent;scheme=whatsapp;package=' + pkg +
+      ';S.browser_fallback_url=' + encodeURIComponent(web) + ';end';
+  }
+  if (isAndroid) {
+    $('wabox').style.display = 'block';
+    try {
+      var saved = localStorage.getItem(WKEY);
+      if (saved === 'biz' || saved === 'wa') {
+        var radio = document.querySelector('input[name="waapp"][value="' + saved + '"]');
+        if (radio) radio.checked = true;
+      }
+    } catch (e) {}
+  }
+  window.__sendUrl = sendUrl;
+
   $('form').addEventListener('submit', function (ev) {
     ev.preventDefault();
     var name = $('name').value.trim(), envio = $('delivery').value === 'envio', addr = $('addr').value.trim();
     if (!name) { toast('Escribí tu nombre'); return; }
     if (envio && !addr) { toast('Escribí la dirección de entrega'); return; }
     try { localStorage.setItem(PKEY, JSON.stringify({ name: name, addr: addr })); } catch (e) {}
-    var url = 'https://wa.me/' + DATA.whatsapp + '?text=' + encodeURIComponent(message());
+    var app = selectedApp();
+    try { localStorage.setItem(WKEY, app); } catch (e) {}
+    var url = sendUrl(app);
     (window.__open || function (u) { window.location.href = u; })(url);
   });
 
